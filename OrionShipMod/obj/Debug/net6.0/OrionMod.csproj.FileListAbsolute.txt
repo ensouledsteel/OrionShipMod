@@ -1,0 +1,17 @@
+C:\Users\taylo\source\repos\CobaltCoreModLoader\OrionModEnsouledSteel\obj\Debug\net6.0\OrionMod.csproj.AssemblyReference.cache
+C:\Users\taylo\source\repos\CobaltCoreModLoader\OrionModEnsouledSteel\obj\Debug\net6.0\OrionMod.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\taylo\source\repos\CobaltCoreModLoader\OrionModEnsouledSteel\obj\Debug\net6.0\OrionMod.AssemblyInfoInputs.cache
+C:\Users\taylo\source\repos\CobaltCoreModLoader\OrionModEnsouledSteel\obj\Debug\net6.0\OrionMod.AssemblyInfo.cs
+C:\Users\taylo\source\repos\CobaltCoreModLoader\OrionModEnsouledSteel\obj\Debug\net6.0\OrionMod.csproj.CoreCompileInputs.cache
+C:\Users\taylo\source\repos\CobaltCoreModLoader\OrionModEnsouledSteel\bin\Debug\net6.0\Sprites\orion_leader.png
+C:\Users\taylo\source\repos\CobaltCoreModLoader\OrionModEnsouledSteel\bin\Debug\net6.0\Sprites\orion_squaddie.png
+C:\Users\taylo\source\repos\CobaltCoreModLoader\OrionModEnsouledSteel\bin\Debug\net6.0\OrionMod.deps.json
+C:\Users\taylo\source\repos\CobaltCoreModLoader\OrionModEnsouledSteel\bin\Debug\net6.0\OrionMod.dll
+C:\Users\taylo\source\repos\CobaltCoreModLoader\OrionModEnsouledSteel\bin\Debug\net6.0\OrionMod.pdb
+C:\Users\taylo\source\repos\CobaltCoreModLoader\OrionModEnsouledSteel\bin\Debug\net6.0\CobaltCoreModding.Definitions.dll
+C:\Users\taylo\source\repos\CobaltCoreModLoader\OrionModEnsouledSteel\bin\Debug\net6.0\CobaltCoreModding.Definitions.pdb
+C:\Users\taylo\source\repos\CobaltCoreModLoader\OrionModEnsouledSteel\obj\Debug\net6.0\OrionMod.csproj.CopyComplete
+C:\Users\taylo\source\repos\CobaltCoreModLoader\OrionModEnsouledSteel\obj\Debug\net6.0\OrionMod.dll
+C:\Users\taylo\source\repos\CobaltCoreModLoader\OrionModEnsouledSteel\obj\Debug\net6.0\refint\OrionMod.dll
+C:\Users\taylo\source\repos\CobaltCoreModLoader\OrionModEnsouledSteel\obj\Debug\net6.0\OrionMod.pdb
+C:\Users\taylo\source\repos\CobaltCoreModLoader\OrionModEnsouledSteel\obj\Debug\net6.0\ref\OrionMod.dll

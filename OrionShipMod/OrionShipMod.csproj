@@ -1,0 +1,49 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Lib.Harmony" Version="2.2.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Reference Include="CobaltCore">
+			<HintPath>References\CobaltCore.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="CobaltCoreModding.Definitions">
+			<HintPath>References\CobaltCoreModding.Definitions.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Update="Sprites\orion_leader.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+
+		<None Update="Sprites\orion_squaddie.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+
+		<None Update="Sprites\orion_squaddie_inactive.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+
+		<None Update="Sprites\chassis_empty.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+
+		<None Update="Sprites\tactics.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+
+		<None Update="Sprites\control_bay.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+</Project>
