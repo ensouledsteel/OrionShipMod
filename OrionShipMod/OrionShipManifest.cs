@@ -1,6 +1,8 @@
 ﻿using CobaltCoreModding.Definitions.ExternalItems;
 using CobaltCoreModding.Definitions.ModContactPoints;
 using CobaltCoreModding.Definitions.ModManifests;
+using HarmonyLib;
+using OrionShipMod.Artifacts;
 
 namespace Orion
 {
@@ -10,29 +12,45 @@ namespace Orion
         public DirectoryInfo? GameRootFolder { get; set; }
         public string Name => "EnsouledSteel.Orion.OrionShipManifest";
 
-        private static ExternalSprite? OrionChassisEmptySprite;
-        private static ExternalSprite? OrionSquaddieSprite;
-        private static ExternalSprite? OrionSquaddieInactiveSprite;
-        private static ExternalSprite? OrionLeaderSprite;
+        public static ExternalSprite? OrionChassisEmptySprite;
+        public static ExternalSprite? OrionSquaddieSprite;
+        public static ExternalSprite? OrionSquaddieInactiveSprite;
+        public static ExternalSprite? OrionLeaderSprite;
 
-        private static ExternalSprite? OrionTacticsSprite;
-        private static ExternalSprite? OrionControlBaySprite;
+        public static ExternalSprite? OrionTacticsSprite;
+        public static ExternalSprite? OrionSuperioritySprite;
+        public static ExternalSprite? OrionControlBaySprite;
 
-        private static ExternalShip? OrionShip;
+        public static ExternalShip? OrionShip;
 
-        private static ExternalPart? OrionEmpty;
-        private static ExternalPart? OrionSquaddieLeft;
-        private static ExternalPart? OrionSquaddieRight;
-        private static ExternalPart? OrionLeader;
+        public static ExternalPart? OrionEmpty;
+        public static ExternalPart? OrionSquaddieLeft;
+        public static ExternalPart? OrionSquaddieRight;
+        public static ExternalPart? OrionLeader;
 
-        private static ExternalArtifact? OrionTactics;
-        private static ExternalArtifact? OrionSuperiority;
-        private static ExternalArtifact? OrionControlBay;
+        public static ExternalArtifact? OrionTactics;
+        public static ExternalArtifact? OrionSuperiority;
+        public static ExternalArtifact? OrionControlBay;
 
         public static ExternalDeck? OrionDeck { get; private set; }
         public static ExternalCard? OrionFormation { get; private set; }
 
         public IEnumerable<string> Dependencies => new string[0];
+
+        private void PatchBossArtifacts(Harmony harmony)
+        {
+            var blocked_artifacts_method = typeof(ArtifactReward).GetMethod("GetBlockedArtifacts", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic);
+            var add_boss_artifact_method = typeof(OrionShipManifest).GetMethod("AddBossArtifact", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic);
+            harmony.Patch(blocked_artifacts_method, postfix: new HarmonyMethod(add_boss_artifact_method));
+        }
+
+        private static void AddBossArtifact(State s, ref HashSet<Type> __result)
+        {
+            if (s.ship.key != "EnsouledSteel.Orion.OrionShip.StarterShip")
+            {
+                __result.Add(typeof(OrionSuperiority));
+            }
+        }
 
         public void LoadManifest(IArtRegistry artRegistry)
         {
@@ -106,6 +124,19 @@ namespace Orion
                 var path = Path.Combine(
                     ModRootFolder.FullName,
                     "Sprites",
+                    Path.GetFileName("superiority.png"));
+
+                OrionSuperioritySprite = new ExternalSprite(
+                    "EnsouledSteel.Orion.OrionSuperioritySprite",
+                    new FileInfo(path));
+
+                if (!artRegistry.RegisterArt(OrionSuperioritySprite))
+                    throw new Exception("Cannot register sprite.");
+            }
+            {
+                var path = Path.Combine(
+                    ModRootFolder.FullName,
+                    "Sprites",
                     Path.GetFileName("control_bay.png"));
 
                 OrionControlBaySprite = new ExternalSprite(
@@ -146,12 +177,15 @@ namespace Orion
 
         public void LoadManifest(IArtifactRegistry registry)
         {
+            var harmony = new Harmony("EnsouledSteel.Orion.OrionShipManifest");
+            PatchBossArtifacts(harmony);
+
             {
                 OrionTactics = new ExternalArtifact(
-                    typeof(OrionShipMod.Artifacts.OrionTactics),
+                    typeof(OrionTactics),
                     "EnsouledSteel.Orion.OrionTactics",
                     OrionTacticsSprite ?? throw new Exception("Could not load Orion Tactics Sprite"),
-                    OrionDeck,
+                    null,
                     Array.Empty<ExternalGlossary>());
 
                 OrionTactics.AddLocalisation("en", "Tactics", "When you play a card from every crewmate's deck on a turn, turn on both cannons. <c=downside>When hit, a random crewmate goes missing.</c>");
@@ -159,10 +193,10 @@ namespace Orion
             }
             {
                 OrionSuperiority = new ExternalArtifact(
-                    typeof(OrionShipMod.Artifacts.OrionTactics),
-                    "EnsouledSteel.Orion.Superiority",
-                    OrionTacticsSprite ?? throw new Exception("Could not load Orion Superiority Sprite"),
-                    OrionDeck,
+                    typeof(OrionSuperiority),
+                    "EnsouledSteel.Orion.OrionSuperiority",
+                    OrionSuperioritySprite ?? throw new Exception("Could not load Orion Superiority Sprite"),
+                    null,
                     Array.Empty<ExternalGlossary>());
 
                 OrionSuperiority.AddLocalisation("en", "Superiority", "Replaces <c=artifact>TACTICS</c>. When you play a card from 3 different decks on a turn, turn on both cannons. <c=downside>When hit, a random crewmate goes missing.</c>");
@@ -170,10 +204,10 @@ namespace Orion
             }
             {
                 OrionControlBay = new ExternalArtifact(
-                    typeof(OrionShipMod.Artifacts.OrionControlBay),
+                    typeof(OrionControlBay),
                     "EnsouledSteel.Orion.OrionControlBay",
                     OrionControlBaySprite ?? throw new Exception("Could not load Orion Control Bay Sprite"),
-                    OrionDeck,
+                    null,
                     Array.Empty<ExternalGlossary>());
 
                 OrionControlBay.AddLocalisation("en", "Control Bay", "On your turn, your cockpit functions as a missile bay.");
@@ -254,7 +288,7 @@ namespace Orion
                     OrionSquaddieLeft ?? throw new Exception("Could not load OrionSquaddie"), 
                     OrionEmpty ?? throw new Exception("Could not load OrionEmpty"), 
                     OrionLeader ?? throw new Exception("Could not load OrionLeader"), 
-                    OrionEmpty ?? throw new Exception("Could not load OrionEmpty"), 
+                    OrionEmpty, 
                     OrionSquaddieRight ?? throw new Exception("Could not load OrionSquaddie"),
                 },
                 OrionChassisEmptySprite,
@@ -268,11 +302,12 @@ namespace Orion
         {
             if (OrionShip == null)
                 return;
-            var starter = new ExternalStarterShip("EnsouledSteel.Orion.OrionShip.StarterShip",
+            var starter = new ExternalStarterShip(
+                "EnsouledSteel.Orion.OrionShip.StarterShip",
                 OrionShip.GlobalName,
                 new ExternalCard[] { OrionFormation ?? throw new Exception() }, 
                 new ExternalArtifact[] { OrionTactics ?? throw new Exception(), OrionControlBay ?? throw new Exception() }, 
-                new Type[] { typeof(BasicShieldColorless), typeof(CannonColorless) }, 
+                new Type[] { typeof(DodgeColorless), typeof(BasicShieldColorless), typeof(CannonColorless) }, 
                 new Type[] { typeof(ShieldPrep) });
 
             starter.AddLocalisation("Orion", "A squad of 3 light fighter ships - extremely fragile, but highly mobile.");

@@ -41,6 +41,10 @@
 		<None Update="Sprites\tactics.png">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
+		
+		<None Update="Sprites\superiority.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
 
 		<None Update="Sprites\control_bay.png">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>

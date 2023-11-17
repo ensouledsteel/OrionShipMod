@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace OrionShipMod.Artifacts
 {
-    [ArtifactMeta(pools = new ArtifactPool[] { ArtifactPool.EventOnly })]
+    [ArtifactMeta(owner = Deck.colorless, pools = new ArtifactPool[] { ArtifactPool.EventOnly })]
     internal class OrionControlBay : Artifact
     {
         public override void OnTurnStart(State state, Combat combat)

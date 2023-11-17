@@ -3,12 +3,13 @@ using System.Collections.Generic;
 
 namespace OrionShipMod.Artifacts
 {
-    [ArtifactMeta(pools = new ArtifactPool[] { ArtifactPool.EventOnly }, unremovable = true)]
+    [ArtifactMeta(owner = Deck.colorless, pools = new ArtifactPool[] { ArtifactPool.EventOnly }, unremovable = true)]
     internal class OrionTactics: Artifact
     {
+        public bool isAssaultFormation = false;
         private HashSet<Deck> playedDecks = new HashSet<Deck>();
         private bool leftActive = true;
-        public virtual bool isValidDeck(State state, Deck deck)
+        private bool isValidDeck(State state, Deck deck)
         {
             // grab the list of current pilot decks
             List<Deck?> validDecks =
@@ -22,32 +23,36 @@ namespace OrionShipMod.Artifacts
         public override int? GetDisplayNumber(State s) => new int?(playedDecks.Count());
         public override void OnPlayerPlayCard(int energyCost, Deck deck, Card card, State state, Combat combat, int handPosition, int handCount)
         {
+            // Be sure to mirror changes in Orion Superiority - kept not DRY for readability
+
             // Don't do anything if we've reached tactics threshold
             if (playedDecks.Count >= 3)
                 return;
 
-            // default squaddie toggle
-            leftActive = !leftActive;
-            ATogglePart toggleAction = new ATogglePart();
-            toggleAction.partType = PType.cannon;
-            toggleAction.timer = 0;
-
-            combat.Queue(toggleAction);
-
             // if the most recent card was from a pilot deck, increase the counts
-            if (!isValidDeck(state, deck))
-                return;
+            if (isValidDeck(state, deck))
+                playedDecks.Add(deck);
 
-            playedDecks.Add(deck);
 
             if (playedDecks.Count < 3)
+            {
+                // If we aren't ready to activate, toggle
+                // active cannon after the current card
+                leftActive = !leftActive;
+                ATogglePart toggleAction = new ATogglePart();
+                toggleAction.partType = PType.cannon;
+                toggleAction.timer = 0;
+
+                combat.Queue(toggleAction);
                 return;
+            }
 
             Pulse();
             combat.QueueImmediate(new OrionSquadToggle());
         }
         public override void OnPlayerTakeNormalDamage(State state, Combat combat)
         {
+            // TODO handle modded characters better
             var missingStatuses = state.characters.Select((Character c) => c.deckType switch
             {
                 Deck.dizzy => Status.missingDizzy,

@@ -1,4 +1,5 @@
-﻿using OrionShipMod.CardActions;
+﻿using Orion;
+using OrionShipMod.CardActions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,11 +8,9 @@ using System.Threading.Tasks;
 
 namespace OrionShipMod.Cards
 {
-    [CardMeta(deck = Deck.colorless, rarity = Rarity.common)]
+    [CardMeta(rarity = Rarity.common)]
     internal class OrionFormation: Card
     {
-        internal static Spr card_sprite = Spr.cards_Shield;
-
         public override List<CardAction> GetActions(State s, Combat c)
         {
             return new List<CardAction>()
@@ -23,8 +22,7 @@ namespace OrionShipMod.Cards
         {
             cost = 1,
             art = Spr.cards_Ace,
-            retain = true,
-            buoyant = true
+            description = Loc.GetLocString(OrionShipManifest.OrionFormation?.DescLocKey ?? throw new Exception("Card not found."))
         };
         public override string Name() => "Form Up!";
     }
