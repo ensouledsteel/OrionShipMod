@@ -16,6 +16,8 @@ namespace Orion
         public static ExternalSprite? OrionSquaddieSprite;
         public static ExternalSprite? OrionSquaddieInactiveSprite;
         public static ExternalSprite? OrionLeaderSprite;
+        public static ExternalSprite? OrionBorderSprite;
+        public static ExternalSprite? OrionFormationSprite;
 
         public static ExternalSprite? OrionTacticsSprite;
         public static ExternalSprite? OrionSuperioritySprite;
@@ -146,19 +148,43 @@ namespace Orion
                 if (!artRegistry.RegisterArt(OrionControlBaySprite))
                     throw new Exception("Cannot register sprite.");
             }
+            {
+                var path = Path.Combine(
+                    ModRootFolder.FullName,
+                    "Sprites",
+                    Path.GetFileName("orion_border.png"));
+
+                OrionBorderSprite = new ExternalSprite(
+                    "EnsouledSteel.Orion.OrionBorderSprite",
+                    new FileInfo(path));
+
+                if (!artRegistry.RegisterArt(OrionBorderSprite))
+                    throw new Exception("Cannot register sprite.");
+            }
+            {
+                var path = Path.Combine(
+                    ModRootFolder.FullName,
+                    "Sprites",
+                    Path.GetFileName("orion_formation.png"));
+
+                OrionFormationSprite = new ExternalSprite(
+                    "EnsouledSteel.Orion.OrionFormationSprite",
+                    new FileInfo(path));
+
+                if (!artRegistry.RegisterArt(OrionFormationSprite))
+                    throw new Exception("Cannot register sprite.");
+            }
         }
 
         private static System.Drawing.Color OrionColor = System.Drawing.Color.FromArgb(52, 61, 76);
         public void LoadManifest(IDeckRegistry registry)
         {
-            ExternalSprite cardArtDefault = ExternalSprite.GetRaw((int)Spr.cards_colorless);
-            ExternalSprite borderSprite = ExternalSprite.GetRaw((int)Spr.cardShared_border_colorless);
             OrionDeck = new ExternalDeck(
                 "EnsouledSteel.Orion.OrionDeck",
                 OrionColor,
                 System.Drawing.Color.Black,
-                cardArtDefault,
-                borderSprite,
+                OrionFormationSprite ?? throw new Exception("Could not load Orion Formation Sprite"),
+                OrionBorderSprite ?? throw new Exception("Could not load Orion Border Sprite"),
                 null);
             registry.RegisterDeck(OrionDeck);
         }
@@ -168,10 +194,11 @@ namespace Orion
             OrionFormation = new ExternalCard(
                 "EnsouledSteel.Orion.OrionFormation", 
                 typeof(OrionShipMod.Cards.OrionFormation), 
-                ExternalSprite.GetRaw((int)Spr.cards_GoatDrone), 
+                OrionFormationSprite ?? throw new Exception("Could not load Orion Formation Sprite"), 
                 OrionDeck);
-
-            OrionFormation.AddLocalisation("Form Up!", "Switch squad formation.");
+            // We are nasty lil devils, the switching back is actually handled in our artifact code, not the card
+            // This is bad, but its a last minute balance change
+            OrionFormation.AddLocalisation("Form Up!", "Switch formation until the start of your next turn.", "Switch formation.");
             registry.RegisterCard(OrionFormation);
         }
 
@@ -188,7 +215,7 @@ namespace Orion
                     null,
                     Array.Empty<ExternalGlossary>());
 
-                OrionTactics.AddLocalisation("en", "Tactics", "When you play a card from every crewmate's deck on a turn, turn on both cannons. <c=downside>When hit, a random crewmate goes missing.</c>");
+                OrionTactics.AddLocalisation("en", "Tactics", "When you play a card from every crewmate's deck on a turn, turn on both cannons. At the start of combat, gain a <c=card>Form Up!</c> <c=downside>When hit, a random crewmate goes missing.</c>");
                 registry.RegisterArtifact(OrionTactics);
             }
             {
@@ -199,7 +226,7 @@ namespace Orion
                     null,
                     Array.Empty<ExternalGlossary>());
 
-                OrionSuperiority.AddLocalisation("en", "Superiority", "Replaces <c=artifact>TACTICS</c>. When you play a card from 3 different decks on a turn, turn on both cannons. <c=downside>When hit, a random crewmate goes missing.</c>");
+                OrionSuperiority.AddLocalisation("en", "Superiority", "Replaces <c=artifact>TACTICS</c>. When you 3 cards on a turn, turn on both cannons. At the start of combat, gain a <c=card>Form Up! A</c>. <c=downside>When hit, a random crewmate goes missing.</c>");
                 registry.RegisterArtifact(OrionSuperiority);
             }
             {
@@ -214,7 +241,6 @@ namespace Orion
                 registry.RegisterArtifact(OrionControlBay);
             }
         }
-
 
         public void LoadManifest(IShipPartRegistry registry)
         {
@@ -305,7 +331,7 @@ namespace Orion
             var starter = new ExternalStarterShip(
                 "EnsouledSteel.Orion.OrionShip.StarterShip",
                 OrionShip.GlobalName,
-                new ExternalCard[] { OrionFormation ?? throw new Exception() }, 
+                new ExternalCard[0], 
                 new ExternalArtifact[] { OrionTactics ?? throw new Exception(), OrionControlBay ?? throw new Exception() }, 
                 new Type[] { typeof(DodgeColorless), typeof(BasicShieldColorless), typeof(CannonColorless) }, 
                 new Type[] { typeof(ShieldPrep) });

@@ -1,5 +1,5 @@
 ﻿using OrionShipMod.CardActions;
-using System.Collections.Generic;
+using OrionShipMod.Cards;
 
 namespace OrionShipMod.Artifacts
 {
@@ -7,8 +7,8 @@ namespace OrionShipMod.Artifacts
     internal class OrionTactics: Artifact
     {
         public bool isAssaultFormation = false;
-        private HashSet<Deck> playedDecks = new HashSet<Deck>();
-        private bool leftActive = true;
+        public HashSet<Deck> playedDecks = new HashSet<Deck>();
+        public bool leftActive = true;
         private bool isValidDeck(State state, Deck deck)
         {
             // grab the list of current pilot decks
@@ -19,7 +19,7 @@ namespace OrionShipMod.Artifacts
                 .ToList();
             return validDecks.Contains(deck);
         }
-
+        public void toggleAssaultFormation() => isAssaultFormation = !isAssaultFormation;
         public override int? GetDisplayNumber(State s) => new int?(playedDecks.Count());
         public override void OnPlayerPlayCard(int energyCost, Deck deck, Card card, State state, Combat combat, int handPosition, int handCount)
         {
@@ -73,9 +73,23 @@ namespace OrionShipMod.Artifacts
                 targetPlayer = true
             });
         }
-        public override void OnTurnStart(State state, Combat combat) => Reset(state);
+        public override void OnCombatStart(State state, Combat combat)
+        {
+            combat.Queue(new AAddCard()
+            {
+                card = new OrionFormation(),
+                destination = CardDestination.Hand
+            });
+        }
+        public override void OnTurnStart(State state, Combat combat)
+        {
+            // We actually reverse Form Up! here. This is bad, but doing it
+            // properly would take a status, and I wanna release.
+            if (isAssaultFormation)
+                combat.QueueImmediate(new AssaultFormation());
+            Reset(state);
+        }
         public override void OnCombatEnd(State state) => Reset(state);
-
         private void Reset(State state)
         {
             bool toggled = leftActive;
@@ -87,6 +101,13 @@ namespace OrionShipMod.Artifacts
                 }
 
             playedDecks = new HashSet<Deck> { };
+        }
+        public override List<Tooltip>? GetExtraTooltips()
+        {
+            return new()
+            {
+                new TTCard { card = new OrionFormation { upgrade = Upgrade.None } }
+            };
         }
     }
 }

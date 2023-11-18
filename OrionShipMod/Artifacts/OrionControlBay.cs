@@ -6,28 +6,31 @@ using System.Threading.Tasks;
 
 namespace OrionShipMod.Artifacts
 {
-    [ArtifactMeta(owner = Deck.colorless, pools = new ArtifactPool[] { ArtifactPool.EventOnly })]
+    [ArtifactMeta(owner = Deck.colorless, pools = new ArtifactPool[] { ArtifactPool.Boss })]
     internal class OrionControlBay : Artifact
     {
+        public int? cockpitIndex;
         public override void OnTurnStart(State state, Combat combat)
         {
-            foreach (Part part in state.ship.parts)
+            for (int i = 0; i < state.ship.parts.Count; i++)
             {
-                if (part.skin == "@mod_part:EnsouledSteel.Orion.OrionShip.OrionLeader")
+                Part part = state.ship.parts[i];
+                if (part.type == PType.cockpit)
+                {
                     part.type = PType.missiles;
+                    cockpitIndex = i;
+                    return;
+                }
             }
         }
 
-        public override void OnTurnEnd(State state, Combat combat) => MakeTheCockpitNormal(state);
-        public override void OnCombatEnd(State state) => MakeTheCockpitNormal(state);
+        public override void OnTurnEnd(State state, Combat combat) => RevertCockpit(state);
+        public override void OnCombatEnd(State state) => RevertCockpit(state);
 
-        public void MakeTheCockpitNormal(State state)
+        public void RevertCockpit(State state)
         {
-            foreach (Part part in state.ship.parts)
-            {
-                if (part.skin == "@mod_part:EnsouledSteel.Orion.OrionShip.OrionLeader")
-                    part.type = PType.cockpit;
-            }
+            if (cockpitIndex != null)
+                state.ship.parts[cockpitIndex ?? 0].type = PType.cockpit;
         }
     }
 }

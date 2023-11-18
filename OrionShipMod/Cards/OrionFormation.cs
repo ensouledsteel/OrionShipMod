@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace OrionShipMod.Cards
 {
-    [CardMeta(rarity = Rarity.common)]
+    [CardMeta(rarity = Rarity.common, upgradesTo = new Upgrade[] { Upgrade.A })]
     internal class OrionFormation: Card
     {
         public override List<CardAction> GetActions(State s, Combat c)
@@ -18,12 +18,20 @@ namespace OrionShipMod.Cards
                 new AssaultFormation()
             };
         }
-        public override CardData GetData(State state) => new CardData
+        public override CardData GetData(State state)
         {
-            cost = 1,
-            art = Spr.cards_Ace,
-            description = Loc.GetLocString(OrionShipManifest.OrionFormation?.DescLocKey ?? throw new Exception("Card not found."))
-        };
-        public override string Name() => "Form Up!";
+            string description = Loc.GetLocString(OrionShipManifest.OrionFormation?.DescLocKey ?? throw new Exception("Card not found."));
+            if (upgrade == Upgrade.A)
+                description = Loc.GetLocString(OrionShipManifest.OrionFormation?.DescALocKey ?? throw new Exception("Card not found."));
+
+            return new CardData
+            {
+                cost = 1,
+                retain = true,
+                recycle = true,
+                temporary = true,
+                description = description
+            };
+        }
     }
 }

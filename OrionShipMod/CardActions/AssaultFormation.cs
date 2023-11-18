@@ -1,4 +1,6 @@
-﻿namespace OrionShipMod.CardActions
+﻿using OrionShipMod.Artifacts;
+
+namespace OrionShipMod.CardActions
 {
     internal class AssaultFormation : CardAction
     {
@@ -27,11 +29,19 @@
                 empty.type = cannon.type;
                 empty.active = cannon.active;
                 empty.skin = cannon.skin;
+                empty.damageModifier = cannon.damageModifier;
+                empty.damageModifierOverrideWhileActive = cannon.damageModifierOverrideWhileActive;
 
                 cannon.type = PType.empty;
                 cannon.active = true;
                 cannon.skin = emptySkin;
+                cannon.damageModifier = PDamMod.none;
+                cannon.damageModifierOverrideWhileActive = PDamMod.none;
             }
+
+            foreach (Artifact artifact in s.artifacts)
+                if (artifact is OrionTactics)
+                    ((OrionTactics) artifact).toggleAssaultFormation();
         }
     }
 }
