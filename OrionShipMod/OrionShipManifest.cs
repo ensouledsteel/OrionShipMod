@@ -226,7 +226,7 @@ namespace Orion
                     null,
                     Array.Empty<ExternalGlossary>());
 
-                OrionSuperiority.AddLocalisation("en", "Superiority", "Replaces <c=artifact>TACTICS</c>. When you 3 cards on a turn, turn on both cannons. At the start of combat, gain a <c=card>Form Up! A</c>. <c=downside>When hit, a random crewmate goes missing.</c>");
+                OrionSuperiority.AddLocalisation("en", "Superiority", "(Orion exclusive artifact!)\nReplaces <c=artifact>TACTICS</c>. When you play 3 cards on your turn, turn on both cannons. At the start of combat, gain a <c=card>Form Up! A</c>.\n<c=downside>When hit, a random crewmate goes missing.</c>");
                 registry.RegisterArtifact(OrionSuperiority);
             }
             {
