@@ -2,7 +2,7 @@
 
 Mod for Cobalt Core, adding the Orion ship - a series of 3 smaller ships that relies on evasion to catch the Cobalt Core and escape the time loop!
 
-![image](https://github.com/ensouledsteel/OrionShipMod/assets/100399211/d16a778d-3747-417d-b085-385b599a532a)
+![image](https://github.com/ensouledsteel/OrionShipMod/assets/100399211/315be819-c060-4276-9d59-5679b9f3826e)
 
 **[CLICK HERE TO GET THE COBALT CORE MOD LOADER! REQUIRED TO USE THIS MOD!](https://github.com/Ewanderer/CobaltCoreModLoader/releases/)**
 
