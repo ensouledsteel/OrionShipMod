@@ -16,7 +16,7 @@ Allows your ships to temporarily change formation, but if you are hit, communica
 # Superiority (Orion Exclusive)
 Allows your ships to PERMENENTLY change formation! Additionally, using any 3 cards will activate both cannons!
 
-![image](https://github.com/ensouledsteel/OrionShipMod/assets/100399211/8d415cc5-2721-4197-8db9-c85dd08076fd)
+![image](https://github.com/ensouledsteel/OrionShipMod/assets/100399211/4d81a156-5375-43f4-93e2-93ee06a9c0a8)
 
 # Control Bay (All Ship Boss Artifact)
 Allows your cockpit to function as a missile bay on your turn! Returns to a cockpit at the end of your turn.
