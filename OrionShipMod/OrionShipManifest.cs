@@ -18,6 +18,7 @@ namespace Orion
         public static ExternalSprite? OrionLeaderSprite;
         public static ExternalSprite? OrionBorderSprite;
         public static ExternalSprite? OrionFormationSprite;
+        public static ExternalSprite? OrionEmptySprite;
 
         public static ExternalSprite? OrionTacticsSprite;
         public static ExternalSprite? OrionSuperioritySprite;
@@ -68,6 +69,19 @@ namespace Orion
                     new FileInfo(path));
 
                 if (!artRegistry.RegisterArt(OrionChassisEmptySprite))
+                    throw new Exception("Cannot register sprite.");
+            }
+            {
+                var path = Path.Combine(
+                    ModRootFolder.FullName,
+                    "Sprites",
+                    Path.GetFileName("orion_empty.png"));
+
+                OrionEmptySprite = new ExternalSprite(
+                    "EnsouledSteel.Orion.OrionEmptySprite",
+                    new FileInfo(path));
+
+                if (!artRegistry.RegisterArt(OrionEmptySprite))
                     throw new Exception("Cannot register sprite.");
             }
             {
@@ -253,7 +267,8 @@ namespace Orion
                     type = PType.empty,
                     invincible = false
                 },
-                ExternalSprite.GetRaw((int)Spr.parts_empty));
+                OrionEmptySprite ?? throw new Exception("Could not load Orion Empty Sprite"),
+                OrionEmptySprite ?? throw new Exception("Could not load Orion Empty Inactive Sprite"));
 
             OrionSquaddieLeft = new ExternalPart(
                 "EnsouledSteel.Orion.OrionShip.OrionSquaddieLeft",
