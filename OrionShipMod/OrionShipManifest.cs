@@ -2,7 +2,6 @@
 using CobaltCoreModding.Definitions.ExternalItems;
 using CobaltCoreModding.Definitions.ModContactPoints;
 using CobaltCoreModding.Definitions.ModManifests;
-using HarmonyLib;
 using OrionShipMod.Artifacts;
 using Microsoft.Extensions.Logging;
 
@@ -45,21 +44,6 @@ namespace Orion
         IEnumerable<DependencyEntry> IManifest.Dependencies => new DependencyEntry[0];
 
         public ILogger? Logger { get; set; }
-
-        private void PatchBossArtifacts(Harmony harmony)
-        {
-            var blocked_artifacts_method = typeof(ArtifactReward).GetMethod("GetBlockedArtifacts", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic);
-            var add_boss_artifact_method = typeof(OrionShipManifest).GetMethod("AddBossArtifact", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic);
-            harmony.Patch(blocked_artifacts_method, postfix: new HarmonyMethod(add_boss_artifact_method));
-        }
-
-        private static void AddBossArtifact(State s, ref HashSet<Type> __result)
-        {
-            if (s.ship.key != "EnsouledSteel.Orion.OrionShip.StarterShip")
-            {
-                __result.Add(typeof(OrionSuperiority));
-            }
-        }
 
         public void LoadManifest(ISpriteRegistry spriteRegistry)
         {
@@ -224,9 +208,6 @@ namespace Orion
 
         public void LoadManifest(IArtifactRegistry registry)
         {
-            var harmony = new Harmony("EnsouledSteel.Orion.OrionShipManifest");
-            PatchBossArtifacts(harmony);
-
             {
                 OrionTactics = new ExternalArtifact(
                     "EnsouledSteel.Orion.OrionTactics",
