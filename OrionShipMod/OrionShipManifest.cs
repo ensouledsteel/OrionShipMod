@@ -1,8 +1,10 @@
-﻿using CobaltCoreModding.Definitions.ExternalItems;
+﻿using CobaltCoreModding.Definitions;
+using CobaltCoreModding.Definitions.ExternalItems;
 using CobaltCoreModding.Definitions.ModContactPoints;
 using CobaltCoreModding.Definitions.ModManifests;
 using HarmonyLib;
 using OrionShipMod.Artifacts;
+using Microsoft.Extensions.Logging;
 
 namespace Orion
 {
@@ -40,6 +42,10 @@ namespace Orion
 
         public IEnumerable<string> Dependencies => new string[0];
 
+        IEnumerable<DependencyEntry> IManifest.Dependencies => new DependencyEntry[0];
+
+        public ILogger? Logger { get; set; }
+
         private void PatchBossArtifacts(Harmony harmony)
         {
             var blocked_artifacts_method = typeof(ArtifactReward).GetMethod("GetBlockedArtifacts", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic);
@@ -55,7 +61,7 @@ namespace Orion
             }
         }
 
-        public void LoadManifest(IArtRegistry artRegistry)
+        public void LoadManifest(ISpriteRegistry spriteRegistry)
         {
             if (ModRootFolder == null) throw new Exception("ROOT FOLDER GONE, EEEEEEDIOT");
             {
@@ -68,7 +74,7 @@ namespace Orion
                     "EnsouledSteel.Orion.OrionChassisEmptySprite",
                     new FileInfo(path));
 
-                if (!artRegistry.RegisterArt(OrionChassisEmptySprite))
+                if (!spriteRegistry.RegisterArt(OrionChassisEmptySprite))
                     throw new Exception("Cannot register sprite.");
             }
             {
@@ -81,7 +87,7 @@ namespace Orion
                     "EnsouledSteel.Orion.OrionEmptySprite",
                     new FileInfo(path));
 
-                if (!artRegistry.RegisterArt(OrionEmptySprite))
+                if (!spriteRegistry.RegisterArt(OrionEmptySprite))
                     throw new Exception("Cannot register sprite.");
             }
             {
@@ -94,7 +100,7 @@ namespace Orion
                     "EnsouledSteel.Orion.OrionSquaddieSprite",
                     new FileInfo(path));
 
-                if (!artRegistry.RegisterArt(OrionSquaddieSprite))
+                if (!spriteRegistry.RegisterArt(OrionSquaddieSprite))
                     throw new Exception("Cannot register sprite.");
             }
             {
@@ -107,7 +113,7 @@ namespace Orion
                     "EnsouledSteel.Orion.OrionSquaddieInactiveSprite",
                     new FileInfo(path));
 
-                if (!artRegistry.RegisterArt(OrionSquaddieInactiveSprite))
+                if (!spriteRegistry.RegisterArt(OrionSquaddieInactiveSprite))
                     throw new Exception("Cannot register sprite.");
             }
             {
@@ -120,7 +126,7 @@ namespace Orion
                     "EnsouledSteel.Orion.OrionLeaderSprite",
                     new FileInfo(path));
                 
-                if (!artRegistry.RegisterArt(OrionLeaderSprite))
+                if (!spriteRegistry.RegisterArt(OrionLeaderSprite))
                     throw new Exception("Cannot register sprite.");
             }
             {
@@ -133,7 +139,7 @@ namespace Orion
                     "EnsouledSteel.Orion.OrionTacticsSprite",
                     new FileInfo(path));
 
-                if (!artRegistry.RegisterArt(OrionTacticsSprite))
+                if (!spriteRegistry.RegisterArt(OrionTacticsSprite))
                     throw new Exception("Cannot register sprite.");
             }
             {
@@ -146,7 +152,7 @@ namespace Orion
                     "EnsouledSteel.Orion.OrionSuperioritySprite",
                     new FileInfo(path));
 
-                if (!artRegistry.RegisterArt(OrionSuperioritySprite))
+                if (!spriteRegistry.RegisterArt(OrionSuperioritySprite))
                     throw new Exception("Cannot register sprite.");
             }
             {
@@ -159,7 +165,7 @@ namespace Orion
                     "EnsouledSteel.Orion.OrionControlBaySprite",
                     new FileInfo(path));
 
-                if (!artRegistry.RegisterArt(OrionControlBaySprite))
+                if (!spriteRegistry.RegisterArt(OrionControlBaySprite))
                     throw new Exception("Cannot register sprite.");
             }
             {
@@ -172,7 +178,7 @@ namespace Orion
                     "EnsouledSteel.Orion.OrionBorderSprite",
                     new FileInfo(path));
 
-                if (!artRegistry.RegisterArt(OrionBorderSprite))
+                if (!spriteRegistry.RegisterArt(OrionBorderSprite))
                     throw new Exception("Cannot register sprite.");
             }
             {
@@ -185,7 +191,7 @@ namespace Orion
                     "EnsouledSteel.Orion.OrionFormationSprite",
                     new FileInfo(path));
 
-                if (!artRegistry.RegisterArt(OrionFormationSprite))
+                if (!spriteRegistry.RegisterArt(OrionFormationSprite))
                     throw new Exception("Cannot register sprite.");
             }
         }
@@ -223,35 +229,32 @@ namespace Orion
 
             {
                 OrionTactics = new ExternalArtifact(
-                    typeof(OrionTactics),
                     "EnsouledSteel.Orion.OrionTactics",
+                    typeof(OrionTactics),
                     OrionTacticsSprite ?? throw new Exception("Could not load Orion Tactics Sprite"),
-                    null,
                     Array.Empty<ExternalGlossary>());
 
-                OrionTactics.AddLocalisation("en", "Tactics", "When you play a card from every crewmate's deck on a turn, turn on both cannons. At the start of combat, gain a <c=card>Form Up!</c> <c=downside>When hit, a random crewmate goes missing.</c>");
+                OrionTactics.AddLocalisation("Tactics", "When you play a card from every crewmate's deck on a turn, turn on both cannons. At the start of combat, gain a <c=card>Form Up!</c> <c=downside>When hit, a random crewmate goes missing.</c>");
                 registry.RegisterArtifact(OrionTactics);
             }
             {
                 OrionSuperiority = new ExternalArtifact(
-                    typeof(OrionSuperiority),
                     "EnsouledSteel.Orion.OrionSuperiority",
+                    typeof(OrionSuperiority),
                     OrionSuperioritySprite ?? throw new Exception("Could not load Orion Superiority Sprite"),
-                    null,
                     Array.Empty<ExternalGlossary>());
 
-                OrionSuperiority.AddLocalisation("en", "Superiority", "(Orion exclusive artifact!)\nReplaces <c=artifact>TACTICS</c>. When you play 3 cards on your turn, turn on both cannons. At the start of combat, gain a <c=card>Form Up! A</c>.\n<c=downside>When hit, a random crewmate goes missing.</c>");
+                OrionSuperiority.AddLocalisation("Superiority", "(Orion exclusive artifact!)\nReplaces <c=artifact>TACTICS</c>. When you play 3 cards on your turn, turn on both cannons. At the start of combat, gain a <c=card>Form Up! A</c>.\n<c=downside>When hit, a random crewmate goes missing.</c>");
                 registry.RegisterArtifact(OrionSuperiority);
             }
             {
                 OrionControlBay = new ExternalArtifact(
-                    typeof(OrionControlBay),
                     "EnsouledSteel.Orion.OrionControlBay",
+                    typeof(OrionControlBay),
                     OrionControlBaySprite ?? throw new Exception("Could not load Orion Control Bay Sprite"),
-                    null,
                     Array.Empty<ExternalGlossary>());
 
-                OrionControlBay.AddLocalisation("en", "Control Bay", "On your turn, your cockpit functions as a missile bay.");
+                OrionControlBay.AddLocalisation("Control Bay", "On your turn, your cockpit functions as a missile bay.");
                 registry.RegisterArtifact(OrionControlBay);
             }
         }
@@ -349,7 +352,8 @@ namespace Orion
                 new ExternalCard[0], 
                 new ExternalArtifact[] { OrionTactics ?? throw new Exception(), OrionControlBay ?? throw new Exception() }, 
                 new Type[] { typeof(DodgeColorless), typeof(BasicShieldColorless), typeof(CannonColorless) }, 
-                new Type[] { typeof(ShieldPrep) });
+                new Type[] { typeof(ShieldPrep) },
+                exclusiveArtifacts: new ExternalArtifact[] {OrionSuperiority ?? throw new Exception("Could not load Orion Superiority Artifact")});
 
             starter.AddLocalisation("Orion", "A squad of 3 light fighter ships - extremely fragile, but highly mobile.");
 
